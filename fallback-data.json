@@ -1,0 +1,33 @@
+{
+  "sweets": [
+    {
+      "name": "Mishti Doi",
+      "price": 120,
+      "category": "Indian Sweet",
+      "description": "Sweet yogurt dessert with caramel flavor, creamy and delicious",
+      "_id": "1780030261136.001",
+      "createdAt": "2026-05-29T04:51:01.136Z",
+      "updatedAt": "2026-05-29T04:51:01.136Z"
+    },
+    {
+      "name": "Rabri",
+      "price": 600,
+      "category": "Indian Sweet",
+      "description": "Rich and creamy dessert made by reducing milk to a thick, velvety consistency. Flavored with cardamom, saffron, and nuts for an aromatic taste.",
+      "_id": "1780030261136.002",
+      "createdAt": "2026-05-29T04:51:01.136Z",
+      "updatedAt": "2026-05-29T04:51:01.136Z"
+    },
+    {
+      "name": "Mango Rabri",
+      "image": "",
+      "price": 300,
+      "category": "Indian sweet",
+      "description": "Mango Rabri is a velvety-smooth dessert made by reducing milk to a thick, creamy consistency and then flavoring it with pureed mangoes, sugar, and cardamom.",
+      "_id": "1780030839301.3867",
+      "createdAt": "2026-05-29T05:00:39.301Z",
+      "updatedAt": "2026-05-29T05:00:39.301Z"
+    }
+  ],
+  "orders": []
+}

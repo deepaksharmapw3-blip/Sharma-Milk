@@ -6,12 +6,14 @@ import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Card, CardContent } from "@/components/ui/card"
 import { MapPin, Phone, Clock, Send, CheckCircle, MessageCircle } from "lucide-react"
+import { motion } from "framer-motion"
+import { FloatingElement } from "@/components/floating-element"
 
 const contactMethods = [
   {
     icon: Phone,
     title: "Call Us",
-    value: "+91 98765 43210",
+    value: "+91 9836595791",
     action: "tel:+919876543210",
     color: "from-[#B22222] to-[#8B0000]",
   },
@@ -83,10 +85,14 @@ export function Contact() {
           <div className="flex flex-col gap-6">
             {/* Quick Contact Cards */}
             <div className="grid gap-4 sm:grid-cols-2">
-              {contactMethods.map((method) => (
-                <a
+              {contactMethods.map((method, index) => (
+                <motion.a
                   key={method.title}
                   href={method.action}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: index * 0.1 }}
                   className="group flex items-center gap-4 rounded-2xl bg-white/5 p-4 backdrop-blur transition-all hover:bg-white/10"
                 >
                   <div className={`flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br ${method.color} shadow-lg`}>
@@ -96,16 +102,24 @@ export function Contact() {
                     <p className="text-sm text-[#FFF8E7]/60">{method.title}</p>
                     <p className="font-semibold text-white">{method.value}</p>
                   </div>
-                </a>
+                </motion.a>
               ))}
             </div>
             
             {/* Map / Location Card */}
-            <div className="flex-1 overflow-hidden rounded-3xl border border-[#D4AF37]/20 bg-gradient-to-br from-[#FFF8E7]/5 to-transparent p-6">
+            <motion.div 
+              initial={{ opacity: 0, x: -30 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.3 }}
+              className="flex-1 overflow-hidden rounded-3xl border border-[#D4AF37]/20 bg-gradient-to-br from-[#FFF8E7]/5 to-transparent p-6"
+            >
               <div className="flex h-full flex-col items-center justify-center text-center">
+                <FloatingElement yOffset={8}>
                 <div className="mb-4 flex h-20 w-20 items-center justify-center rounded-full bg-gradient-to-br from-[#B22222]/20 to-[#FF9933]/20">
                   <MapPin className="h-10 w-10 text-[#D4AF37]" />
                 </div>
+                </FloatingElement>
                 <h3 className="font-serif text-xl font-bold text-white">Visit Our Shop</h3>
                 <p className="mt-2 text-[#FFF8E7]/70">
                   Shop No. 2, Dacres Lane
@@ -121,7 +135,7 @@ export function Contact() {
                   Get Directions
                 </Button>
               </div>
-            </div>
+            </motion.div>
           </div>
 
           {/* Contact Form */}
@@ -165,7 +179,7 @@ export function Contact() {
                     <Input
                       id="phone"
                       type="tel"
-                      placeholder="+91 98765 43210"
+                      placeholder="+91 9836595791"
                       value={formData.phone}
                       onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                       className="h-12 rounded-xl border-[#D4AF37]/30 bg-[#FFF8E7]/50 focus:border-[#D4AF37]"
@@ -189,7 +203,7 @@ export function Contact() {
                   <Button
                     type="submit"
                     size="lg"
-                    className="h-12 gap-2 rounded-xl bg-gradient-to-r from-[#B22222] to-[#8B0000] text-base font-semibold text-white shadow-lg transition-all hover:scale-[1.02] hover:shadow-xl"
+                    className="h-12 gap-2 rounded-xl bg-gradient-to-r from-[#B22222] to-[#8B0000] text-base font-semibold text-white shadow-lg transition-all hover:scale-[1.02] hover:shadow-xl hover-shine-effect"
                   >
                     <Send className="h-4 w-4" />
                     Send Message
@@ -207,7 +221,7 @@ export function Contact() {
                   
                   <a
                     href="https://wa.me/919876543210?text=Hi, I want to place an order"
-                    className="flex h-12 items-center justify-center gap-2 rounded-xl bg-[#25D366] font-semibold text-white transition-all hover:bg-[#128C7E]"
+                    className="flex h-12 items-center justify-center gap-2 rounded-xl bg-[#25D366] font-semibold text-white transition-all hover:bg-[#128C7E] hover-shine-effect"
                   >
                     <MessageCircle className="h-5 w-5" />
                     Order via WhatsApp

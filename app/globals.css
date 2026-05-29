@@ -4,96 +4,97 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
-  /* Cream/Off-white base */
-  --background: #FFF8E7;
-  --foreground: #3D2914;
+  /* === ROYAL INDIAN PALETTE === */
+  /* Warm ivory - like aged parchment */
+  --background: #FDF6E3;
+  --foreground: #2C1810;
   
-  /* Card with soft cream */
+  /* Cream card */
   --card: #FFFDF7;
-  --card-foreground: #3D2914;
+  --card-foreground: #2C1810;
   
   --popover: #FFFDF7;
-  --popover-foreground: #3D2914;
+  --popover-foreground: #2C1810;
   
-  /* Deep Red primary */
-  --primary: #B22222;
-  --primary-foreground: #FFF8E7;
+  /* Deep Vermilion Red - Sindoor */
+  --primary: #C0392B;
+  --primary-foreground: #FDF6E3;
   
   /* Saffron secondary */
-  --secondary: #FFF0D4;
-  --secondary-foreground: #3D2914;
+  --secondary: #FFF3D4;
+  --secondary-foreground: #2C1810;
   
-  --muted: #F5EBD8;
-  --muted-foreground: #6B5344;
+  --muted: #F5EBD4;
+  --muted-foreground: #7A5C44;
   
-  /* Gold accent */
-  --accent: #D4AF37;
-  --accent-foreground: #3D2914;
+  /* Royal Gold - 24K */
+  --accent: #C9A84C;
+  --accent-foreground: #2C1810;
   
-  /* Saffron for highlights */
-  --saffron: #FF9933;
-  --saffron-foreground: #3D2914;
+  /* Saffron */
+  --saffron: #E8871A;
+  --saffron-foreground: #2C1810;
   
   --destructive: #DC2626;
-  --destructive-foreground: #FFF8E7;
+  --destructive-foreground: #FDF6E3;
   
-  --border: #E8DCC8;
-  --input: #F5EBD8;
-  --ring: #B22222;
+  --border: #E2D5B8;
+  --input: #F5EBD4;
+  --ring: #C0392B;
   
-  --chart-1: #B22222;
-  --chart-2: #FF9933;
-  --chart-3: #D4AF37;
+  --chart-1: #C0392B;
+  --chart-2: #E8871A;
+  --chart-3: #C9A84C;
   --chart-4: #8B4513;
   --chart-5: #CD853F;
   
   --radius: 1rem;
   
   --sidebar: #FFF5E1;
-  --sidebar-foreground: #3D2914;
-  --sidebar-primary: #B22222;
-  --sidebar-primary-foreground: #FFF8E7;
+  --sidebar-foreground: #2C1810;
+  --sidebar-primary: #C0392B;
+  --sidebar-primary-foreground: #FDF6E3;
   --sidebar-accent: #FFF0D4;
-  --sidebar-accent-foreground: #3D2914;
-  --sidebar-border: #E8DCC8;
-  --sidebar-ring: #B22222;
+  --sidebar-accent-foreground: #2C1810;
+  --sidebar-border: #E2D5B8;
+  --sidebar-ring: #C0392B;
 }
 
 .dark {
-  --background: #1A0F0A;
-  --foreground: #FFF8E7;
-  --card: #251810;
-  --card-foreground: #FFF8E7;
-  --popover: #251810;
-  --popover-foreground: #FFF8E7;
-  --primary: #E85A5A;
-  --primary-foreground: #1A0F0A;
-  --secondary: #3D2914;
-  --secondary-foreground: #FFF8E7;
-  --muted: #3D2914;
+  --background: #150A05;
+  --foreground: #FDF6E3;
+  --card: #1E0F08;
+  --card-foreground: #FDF6E3;
+  --popover: #1E0F08;
+  --popover-foreground: #FDF6E3;
+  --primary: #E05544;
+  --primary-foreground: #150A05;
+  --secondary: #3A2010;
+  --secondary-foreground: #FDF6E3;
+  --muted: #3A2010;
   --muted-foreground: #C4A77D;
-  --accent: #E8C547;
-  --accent-foreground: #1A0F0A;
-  --saffron: #FFB366;
-  --saffron-foreground: #1A0F0A;
+  --accent: #D4AF37;
+  --accent-foreground: #150A05;
+  --saffron: #FFB347;
+  --saffron-foreground: #150A05;
   --destructive: #EF4444;
-  --destructive-foreground: #FFF8E7;
-  --border: #4A3525;
-  --input: #3D2914;
-  --ring: #E85A5A;
-  --chart-1: #E85A5A;
-  --chart-2: #FFB366;
-  --chart-3: #E8C547;
+  --destructive-foreground: #FDF6E3;
+  --border: #4A3020;
+  --input: #3A2010;
+  --ring: #E05544;
+  --chart-1: #E05544;
+  --chart-2: #FFB347;
+  --chart-3: #D4AF37;
   --chart-4: #CD853F;
   --chart-5: #DEB887;
-  --sidebar: #201410;
-  --sidebar-foreground: #FFF8E7;
-  --sidebar-primary: #E85A5A;
-  --sidebar-primary-foreground: #1A0F0A;
-  --sidebar-accent: #3D2914;
-  --sidebar-accent-foreground: #FFF8E7;
-  --sidebar-border: #4A3525;
-  --sidebar-ring: #E85A5A;
+  --sidebar: #1A0B06;
+  --sidebar-foreground: #FDF6E3;
+  --sidebar-primary: #E05544;
+  --sidebar-primary-foreground: #150A05;
+  --sidebar-accent: #3A2010;
+  --sidebar-accent-foreground: #FDF6E3;
+  --sidebar-border: #4A3020;
+  --sidebar-ring: #E05544;
 }
 
 @theme inline {
@@ -146,13 +147,16 @@
   }
   body {
     @apply bg-background text-foreground;
+    font-feature-settings: "kern" 1, "liga" 1;
   }
   html {
     scroll-behavior: smooth;
   }
 }
 
-/* Hide scrollbar for categories */
+/* ============================================
+   SCROLLBAR
+============================================ */
 .scrollbar-hide {
   -ms-overflow-style: none;
   scrollbar-width: none;
@@ -161,15 +165,98 @@
   display: none;
 }
 
-/* Decorative patterns */
+/* ============================================
+   MANDALA / RANGOLI FESTIVE PATTERN
+   (Complex interlocking geometric Indian pattern)
+============================================ */
 .festive-pattern {
-  background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23D4AF37' fill-opacity='0.08'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80' viewBox='0 0 80 80'%3E%3Cg fill='%23C9A84C' fill-opacity='0.07'%3E%3Ccircle cx='40' cy='40' r='3'/%3E%3Ccircle cx='40' cy='40' r='10' fill='none' stroke='%23C9A84C' stroke-opacity='0.07' stroke-width='1'/%3E%3Ccircle cx='40' cy='40' r='20' fill='none' stroke='%23C9A84C' stroke-opacity='0.05' stroke-width='1'/%3E%3Cpath d='M40 20 L43 30 L53 30 L45 36 L48 46 L40 40 L32 46 L35 36 L27 30 L37 30 Z' fill-opacity='0.08'/%3E%3Cpath d='M20 40 h6 M54 40 h6 M40 20 v6 M40 54 v6' stroke='%23C9A84C' stroke-opacity='0.08' stroke-width='1.5'/%3E%3Ccircle cx='20' cy='20' r='2' fill-opacity='0.1'/%3E%3Ccircle cx='60' cy='20' r='2' fill-opacity='0.1'/%3E%3Ccircle cx='20' cy='60' r='2' fill-opacity='0.1'/%3E%3Ccircle cx='60' cy='60' r='2' fill-opacity='0.1'/%3E%3Cpath d='M0 0 L5 5 M75 0 L80 5 M0 80 L5 75 M80 80 L75 75' stroke='%23C9A84C' stroke-opacity='0.1' stroke-width='1'/%3E%3C/g%3E%3C/svg%3E");
 }
 
+/* Dark section mandala */
+.festive-pattern-dark {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80' viewBox='0 0 80 80'%3E%3Cg fill='%23C9A84C' fill-opacity='0.06'%3E%3Ccircle cx='40' cy='40' r='3'/%3E%3Ccircle cx='40' cy='40' r='12' fill='none' stroke='%23C9A84C' stroke-opacity='0.06' stroke-width='1'/%3E%3Ccircle cx='40' cy='40' r='22' fill='none' stroke='%23C9A84C' stroke-opacity='0.04' stroke-width='1'/%3E%3Cpath d='M40 20 L43 30 L53 30 L45 36 L48 46 L40 40 L32 46 L35 36 L27 30 L37 30 Z' fill-opacity='0.06'/%3E%3Cpath d='M20 40 h6 M54 40 h6 M40 20 v6 M40 54 v6' stroke='%23C9A84C' stroke-opacity='0.06' stroke-width='1.5'/%3E%3Ccircle cx='20' cy='20' r='2' fill-opacity='0.1'/%3E%3Ccircle cx='60' cy='20' r='2' fill-opacity='0.1'/%3E%3Ccircle cx='20' cy='60' r='2' fill-opacity='0.1'/%3E%3Ccircle cx='60' cy='60' r='2' fill-opacity='0.1'/%3E%3C/g%3E%3C/svg%3E");
+}
+
+/* ============================================
+   ORNATE BORDER - Indian Wedding Card style
+   (decorative corner motifs via CSS)
+============================================ */
+.ornate-border {
+  position: relative;
+}
+.ornate-border::before,
+.ornate-border::after {
+  content: '';
+  position: absolute;
+  width: 28px;
+  height: 28px;
+  border-color: #C9A84C;
+  border-style: solid;
+  opacity: 0.5;
+  pointer-events: none;
+  z-index: 1;
+}
+.ornate-border::before {
+  top: 6px;
+  left: 6px;
+  border-width: 2px 0 0 2px;
+  border-radius: 4px 0 0 0;
+}
+.ornate-border::after {
+  bottom: 6px;
+  right: 6px;
+  border-width: 0 2px 2px 0;
+  border-radius: 0 0 4px 0;
+}
+
+/* Inner corner pair via a wrapper trick */
+.ornate-border-full {
+  position: relative;
+}
+.ornate-border-full::before,
+.ornate-border-full::after {
+  content: '';
+  position: absolute;
+  width: 22px;
+  height: 22px;
+  border-color: #C9A84C;
+  border-style: solid;
+  opacity: 0.45;
+  pointer-events: none;
+  z-index: 2;
+}
+.ornate-border-full::before {
+  top: 8px;
+  left: 8px;
+  border-width: 2px 0 0 2px;
+}
+.ornate-border-full::after {
+  bottom: 8px;
+  right: 8px;
+  border-width: 0 2px 2px 0;
+}
+
+/* ============================================
+   GOLD SHIMMER TEXT & ELEMENTS
+============================================ */
 .gold-shimmer {
-  background: linear-gradient(135deg, #D4AF37 0%, #F5D76E 50%, #D4AF37 100%);
+  background: linear-gradient(90deg, #C9A84C 0%, #F5D76E 30%, #E8B84B 50%, #F5D76E 70%, #C9A84C 100%);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: goldShimmer 4s linear infinite;
+}
+
+.gold-shimmer-bg {
+  background: linear-gradient(135deg, #C9A84C 0%, #F5D76E 50%, #C9A84C 100%);
   background-size: 200% 200%;
   animation: shimmer 3s ease infinite;
+}
+
+@keyframes goldShimmer {
+  to { background-position: 200% center; }
 }
 
 @keyframes shimmer {
@@ -177,14 +264,184 @@
   50% { background-position: 100% 50%; }
 }
 
-/* Glass effect */
-.glass {
-  background: rgba(255, 248, 231, 0.7);
-  backdrop-filter: blur(12px);
-  border: 1px solid rgba(212, 175, 55, 0.2);
+/* ============================================
+   DIYA GLOW - Warm festive ambient light
+============================================ */
+.diya-glow {
+  box-shadow:
+    0 0 20px rgba(232, 135, 26, 0.25),
+    0 0 60px rgba(201, 168, 76, 0.12),
+    0 4px 24px rgba(192, 57, 43, 0.15);
 }
 
-.dark .glass {
-  background: rgba(26, 15, 10, 0.7);
-  border: 1px solid rgba(212, 175, 55, 0.15);
+.diya-glow-hover {
+  transition: box-shadow 0.4s ease, transform 0.3s ease;
+}
+.diya-glow-hover:hover {
+  box-shadow:
+    0 0 30px rgba(232, 135, 26, 0.35),
+    0 0 80px rgba(201, 168, 76, 0.2),
+    0 8px 40px rgba(192, 57, 43, 0.2);
+  transform: translateY(-2px);
+}
+
+/* ============================================
+   GLASS EFFECT
+============================================ */
+.glass {
+  background: rgba(253, 246, 227, 0.72);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(201, 168, 76, 0.25);
+}
+.glass-dark {
+  background: rgba(21, 10, 5, 0.75);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(201, 168, 76, 0.18);
+}
+
+/* ============================================
+   HOVER SHINE EFFECT (luxury sweep)
+============================================ */
+.hover-shine-effect {
+  position: relative;
+  overflow: hidden;
+}
+.hover-shine-effect::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 60%;
+  height: 100%;
+  background: linear-gradient(
+    105deg,
+    rgba(255,255,255,0) 0%,
+    rgba(255,255,255,0.22) 45%,
+    rgba(201,168,76,0.18) 55%,
+    rgba(255,255,255,0) 100%
+  );
+  transform: skewX(-20deg);
+  transition: left 0.65s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 1;
+  pointer-events: none;
+}
+.hover-shine-effect:hover::before {
+  left: 160%;
+}
+
+/* ============================================
+   CINEMATIC PARALLAX CONTAINER
+============================================ */
+.parallax-section {
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+
+/* ============================================
+   DECORATIVE DIVIDER - lotus petal style
+============================================ */
+.lotus-divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.lotus-divider::before,
+.lotus-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(to right, transparent, #C9A84C, transparent);
+}
+
+/* ============================================
+   PRODUCT CARD PREMIUM GLOW
+============================================ */
+.product-card-glow {
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.product-card-glow:hover {
+  box-shadow:
+    0 20px 60px -12px rgba(192, 57, 43, 0.2),
+    0 0 0 1px rgba(201, 168, 76, 0.2),
+    inset 0 1px 0 rgba(255,255,255,0.9);
+}
+
+/* ============================================
+   FESTIVE BADGE ANIMATIONS
+============================================ */
+@keyframes diwaGlow {
+  0%, 100% { box-shadow: 0 0 8px rgba(232, 135, 26, 0.4), 0 0 20px rgba(201, 168, 76, 0.2); }
+  50% { box-shadow: 0 0 16px rgba(232, 135, 26, 0.7), 0 0 40px rgba(201, 168, 76, 0.35); }
+}
+.festive-badge {
+  animation: diwaGlow 2.5s ease-in-out infinite;
+}
+
+/* ============================================
+   SECTION TRANSITION GRADIENT
+============================================ */
+.section-fade-top {
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 80px;
+  background: linear-gradient(to bottom, var(--background), transparent);
+  pointer-events: none;
+  z-index: 2;
+}
+.section-fade-bottom {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 80px;
+  background: linear-gradient(to top, var(--background), transparent);
+  pointer-events: none;
+  z-index: 2;
+}
+
+/* ============================================
+   CINEMATIC TEXT REVEAL
+============================================ */
+@keyframes revealUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.reveal-up {
+  animation: revealUp 0.7s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+/* ============================================
+   DECORATIVE PATTERN - Hero background dots
+============================================ */
+.dot-pattern {
+  background-image: radial-gradient(circle, rgba(201,168,76,0.18) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+
+/* ============================================
+   EMOTION-DRIVEN CARD OVERLAY
+   Warm sunset gradient for food images
+============================================ */
+.food-overlay {
+  background: linear-gradient(
+    to top,
+    rgba(44, 24, 16, 0.75) 0%,
+    rgba(192, 57, 43, 0.1) 50%,
+    transparent 100%
+  );
+}
+
+/* ============================================
+   SCROLLING TICKER ANIMATION
+============================================ */
+@keyframes ticker {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+.ticker {
+  animation: ticker 20s linear infinite;
+  will-change: transform;
+}
+.ticker:hover {
+  animation-play-state: paused;
 }

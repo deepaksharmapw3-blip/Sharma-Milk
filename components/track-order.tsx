@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent } from "@/components/ui/card"
 import { Package, Truck, CheckCircle, Search, MapPin, Phone, MessageCircle } from "lucide-react"
+import { motion } from "framer-motion"
 
 const orderStatuses = [
   { step: 1, label: "Confirmed", icon: CheckCircle, time: "2:30 PM" },
@@ -45,6 +46,12 @@ export function TrackOrder() {
           </div>
 
           {/* Search Form */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+          >
           <Card className="mb-6 overflow-hidden rounded-2xl border-0 shadow-xl">
             <CardContent className="p-0">
               <form onSubmit={handleTrack} className="flex items-center">
@@ -60,16 +67,22 @@ export function TrackOrder() {
                 </div>
                 <Button
                   type="submit"
-                  className="h-14 rounded-none bg-gradient-to-r from-[#B22222] to-[#8B0000] px-8 text-base font-semibold text-white"
+                  className="h-14 rounded-none bg-gradient-to-r from-[#B22222] to-[#8B0000] px-8 text-base font-semibold text-white hover-shine-effect"
                 >
                   Track
                 </Button>
               </form>
             </CardContent>
           </Card>
+          </motion.div>
 
           {/* Order Status Display */}
           {isTracking && (
+            <motion.div
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: "auto" }}
+              transition={{ duration: 0.5 }}
+            >
             <Card className="overflow-hidden rounded-3xl border-0 shadow-xl">
               {/* Header */}
               <div className="bg-gradient-to-r from-[#B22222] to-[#8B0000] p-5 text-white">
@@ -98,7 +111,13 @@ export function TrackOrder() {
                     </div>
                     
                     {orderStatuses.map((status, index) => (
-                      <div key={status.step} className="relative flex flex-col items-center">
+                      <motion.div 
+                        key={status.step} 
+                        initial={{ opacity: 0, scale: 0.8 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        transition={{ delay: 0.3 + index * 0.1 }}
+                        className="relative flex flex-col items-center"
+                      >
                         <div
                           className={`z-10 flex h-10 w-10 items-center justify-center rounded-full shadow-md transition-all ${
                             index < currentStep
@@ -116,7 +135,7 @@ export function TrackOrder() {
                           {status.label}
                         </p>
                         <p className="text-[10px] text-muted-foreground">{status.time}</p>
-                      </div>
+                      </motion.div>
                     ))}
                   </div>
                 </div>
@@ -184,6 +203,7 @@ export function TrackOrder() {
                 </div>
               </CardContent>
             </Card>
+            </motion.div>
           )}
         </div>
       </div>

@@ -6,6 +6,7 @@ import { About } from "@/components/about"
 import { TrackOrder } from "@/components/track-order"
 import { Contact } from "@/components/contact"
 import { Footer } from "@/components/footer"
+import AddSweet from "@/components/add-sweet"
 
 export default function HomePage() {
   return (
@@ -17,6 +18,7 @@ export default function HomePage() {
         <Categories />
         <About />
         <TrackOrder />
+        <AddSweet />
         <Contact />
       </main>
       <Footer />

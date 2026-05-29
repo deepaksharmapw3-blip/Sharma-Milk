@@ -1,5 +1,8 @@
+"use client"
+
 import Link from "next/link"
 import { Facebook, Instagram, Twitter, Youtube } from "lucide-react"
+import { motion } from "framer-motion"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 
@@ -44,7 +47,13 @@ export function Footer() {
       <div className="mx-auto max-w-7xl px-4 py-12 lg:px-8 lg:py-16">
         <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-5">
           {/* Brand & Newsletter */}
-          <div className="lg:col-span-2">
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5, delay: 0.1 }}
+            className="lg:col-span-2"
+          >
             <Link href="/" className="flex items-center gap-3">
               <div className="relative flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-br from-[#B22222] to-[#8B0000] shadow-lg">
                 <span className="font-serif text-lg font-bold text-[#FFF8E7]">SM</span>
@@ -96,10 +105,15 @@ export function Footer() {
                 </Link>
               ))}
             </div>
-          </div>
+          </motion.div>
 
           {/* Links */}
-          <div>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+          >
             <h4 className="font-semibold text-[#B22222]">Shop</h4>
             <ul className="mt-4 space-y-2.5">
               {footerLinks.shop.map((link) => (
@@ -113,9 +127,14 @@ export function Footer() {
                 </li>
               ))}
             </ul>
-          </div>
+          </motion.div>
 
-          <div>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5, delay: 0.3 }}
+          >
             <h4 className="font-semibold text-[#B22222]">Company</h4>
             <ul className="mt-4 space-y-2.5">
               {footerLinks.company.map((link) => (
@@ -129,9 +148,14 @@ export function Footer() {
                 </li>
               ))}
             </ul>
-          </div>
+          </motion.div>
 
-          <div>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5, delay: 0.4 }}
+          >
             <h4 className="font-semibold text-[#B22222]">Support</h4>
             <ul className="mt-4 space-y-2.5">
               {footerLinks.support.map((link) => (
@@ -145,11 +169,17 @@ export function Footer() {
                 </li>
               ))}
             </ul>
-          </div>
+          </motion.div>
         </div>
 
         {/* Bottom Section */}
-        <div className="mt-12 flex flex-col items-center justify-between gap-6 border-t border-[#D4AF37]/20 pt-8 md:flex-row">
+        <motion.div 
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5, delay: 0.6 }}
+          className="mt-12 flex flex-col items-center justify-between gap-6 border-t border-[#D4AF37]/20 pt-8 md:flex-row"
+        >
           <div className="flex flex-col items-center gap-2 md:items-start">
             <p className="text-sm text-muted-foreground">
               © 2026 Sharma Milk. All rights reserved.
@@ -175,7 +205,7 @@ export function Footer() {
               ))}
             </div>
           </div>
-        </div>
+        </motion.div>
       </div>
     </footer>
   )
