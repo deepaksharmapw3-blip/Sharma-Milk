@@ -1,15 +1,17 @@
+require('dotenv').config();
 const express = require('express');
 const app = express();
-const port = 4000;
+const port = process.env.PORT || 4000;
 const db = require('./database');
-const passport = require('./auth');
+const { passport, generateToken, requireJWT } = require('./auth');
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Allow CORS from the frontend during development
+// CORS — use env variable so it works in production too
+const FRONTEND_URL = process.env.FRONTEND_URL || 'http://localhost:3000';
 app.use((req, res, next) => {
-    res.header('Access-Control-Allow-Origin', 'http://localhost:3000');
+    res.header('Access-Control-Allow-Origin', FRONTEND_URL);
     res.header('Access-Control-Allow-Methods', 'GET,POST,PUT,PATCH,DELETE,OPTIONS');
     res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
     if (req.method === 'OPTIONS') {
@@ -20,70 +22,104 @@ app.use((req, res, next) => {
 
 app.use(passport.initialize());
 
-// API endpoints
+// ─── Auth ────────────────────────────────────────────────────────────────────
+
+// POST /login — returns a JWT token
+app.post('/login', (req, res, next) => {
+    passport.authenticate('local', { session: false }, (err, user, info) => {
+        if (err) return next(err);
+        if (!user) return res.status(401).json({ error: info?.message || 'Invalid credentials' });
+        const token = generateToken(user);
+        res.json({ token, username: user.username });
+    })(req, res, next);
+});
+
+// ─── Sweets ──────────────────────────────────────────────────────────────────
+
 app.get('/sweets', (req, res) => {
-    db.Sweets.find().then((sweets) => {
-        res.json(sweets);
-    });
+    db.Sweets.find()
+        .then((sweets) => res.json(sweets))
+        .catch((err) => res.status(500).json({ error: err.message }));
 });
 
 app.get('/sweets/:id', (req, res) => {
-    db.Sweets.findById(req.params.id).then((sweet) => {
-        res.json(sweet);
-    });
+    db.Sweets.findById(req.params.id)
+        .then((sweet) => {
+            if (!sweet) return res.status(404).json({ error: 'Sweet not found' });
+            res.json(sweet);
+        })
+        .catch((err) => res.status(500).json({ error: err.message }));
 });
 
-app.post('/sweets', (req, res) => {
+// Admin only: add a sweet
+app.post('/sweets', requireJWT, (req, res) => {
     const { name, image, price, category, description } = req.body;
-
     if (!name || !price) {
         return res.status(400).json({ error: 'name and price are required' });
     }
-
     const sweet = new db.Sweets({ name, image, price, category, description });
     sweet.save()
-        .then((createdSweet) => {
-            res.status(201).json(createdSweet);
+        .then((createdSweet) => res.status(201).json(createdSweet))
+        .catch((err) => res.status(500).json({ error: err.message }));
+});
+
+// Admin only: delete a sweet
+app.delete('/sweets/:id', requireJWT, (req, res) => {
+    db.Sweets.findByIdAndDelete(req.params.id)
+        .then((deleted) => {
+            if (!deleted) return res.status(404).json({ error: 'Sweet not found' });
+            res.json({ success: true, deleted });
         })
-        .catch((error) => {
-            res.status(500).json({ error: error.message });
-        });
+        .catch((err) => res.status(500).json({ error: err.message }));
 });
 
-// Delete a sweet by id
-app.delete('/sweets/:id', (req, res) => {
-    const id = req.params.id;
-    if (typeof db.Sweets.findByIdAndDelete === 'function') {
-        db.Sweets.findByIdAndDelete(id)
-            .then((deleted) => {
-                if (!deleted) return res.status(404).json({ error: 'sweet not found' });
-                res.json({ success: true, deleted });
-            })
-            .catch((error) => {
-                res.status(500).json({ error: error.message });
-            });
-    } else {
-        res.status(500).json({ error: 'delete not supported by DB driver' });
+// ─── Orders ──────────────────────────────────────────────────────────────────
+
+// Public: place an order (no login needed for customers)
+app.post('/orders', (req, res) => {
+    const { items, customerName, customerEmail, customerPhone, total } = req.body;
+    if (!items || !Array.isArray(items) || items.length === 0) {
+        return res.status(400).json({ error: 'items array is required' });
     }
+    if (!total) {
+        return res.status(400).json({ error: 'total is required' });
+    }
+    const order = new db.Order({ items, customerName, customerEmail, customerPhone, total, status: 'pending' });
+    order.save()
+        .then((savedOrder) => res.status(201).json(savedOrder))
+        .catch((err) => res.status(500).json({ error: err.message }));
 });
 
-app.post('/orders', passport.authenticate('local', { session: false }), (req, res) => {
-    const order = new db.Order(req.body);
-    order.save().then((order) => {
-        res.json(order);
-    });
+// Public: track an order by ID
+app.get('/orders/:id', (req, res) => {
+    db.Order.findById(req.params.id)
+        .then((order) => {
+            if (!order) return res.status(404).json({ error: 'Order not found' });
+            res.json(order);
+        })
+        .catch((err) => res.status(500).json({ error: err.message }));
 });
 
-app.get('/orders', passport.authenticate('local', { session: false }), (req, res) => {
-    db.Order.find().then((orders) => {
-        res.json(orders);
-    });
+// Admin only: list all orders
+app.get('/orders', requireJWT, (req, res) => {
+    db.Order.find()
+        .then((orders) => res.json(orders))
+        .catch((err) => res.status(500).json({ error: err.message }));
 });
 
-app.get('/orders/:id', passport.authenticate('local', { session: false }), (req, res) => {
-    db.Order.findById(req.params.id).then((order) => {
-        res.json(order);
-    });
+// Admin only: update order status
+app.patch('/orders/:id/status', requireJWT, (req, res) => {
+    const { status } = req.body;
+    const validStatuses = ['pending', 'confirmed', 'preparing', 'on_the_way', 'delivered'];
+    if (!validStatuses.includes(status)) {
+        return res.status(400).json({ error: `status must be one of: ${validStatuses.join(', ')}` });
+    }
+    db.Order.findByIdAndUpdate(req.params.id, { $set: { status } })
+        .then((updated) => {
+            if (!updated) return res.status(404).json({ error: 'Order not found' });
+            res.json(updated);
+        })
+        .catch((err) => res.status(500).json({ error: err.message }));
 });
 
 app.listen(port, () => {
