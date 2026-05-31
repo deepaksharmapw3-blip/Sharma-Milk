@@ -57,7 +57,7 @@ export function TrackOrder() {
     setIsTracking(false)
 
     try {
-      const response = await fetch(`${API_URL}/orders/track/${orderNumber.trim()}`)
+      const response = await fetch(`${API_URL}/orders/${orderNumber.trim()}`)
       if (response.status === 404) {
         throw new Error("Order not found. Please verify the order ID.")
       }
