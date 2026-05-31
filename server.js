@@ -4,6 +4,7 @@ const app = express();
 const port = process.env.PORT || 4000;
 const db = require('./database');
 const { passport, generateToken, requireJWT } = require('./auth');
+const productRoutes = require('./routes/products');
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -21,6 +22,9 @@ app.use((req, res, next) => {
 });
 
 app.use(passport.initialize());
+
+// ─── Products ────────────────────────────────────────────────────────────────
+app.use('/products', productRoutes);
 
 // ─── Auth ────────────────────────────────────────────────────────────────────
 

@@ -1,143 +1,154 @@
-const db = require('./database');
+require('dotenv').config();
+const mongoose = require('mongoose');
+const Product = require('./models/Product');
 
-const seedSweets = [
+const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/sweets-shop';
+
+const seedProducts = [
   {
-    name: 'Vanilla Macaron',
-    image: 'https://example.com/images/vanilla-macaron.jpg',
-    price: 3.5,
-    category: 'Macaron',
-    description: 'Light almond cookie with a vanilla bean buttercream filling.',
+    name: 'Kaju Katli',
+    description: 'Premium cashew fudge with a delicate silver leaf topping. Made with pure desi ghee and hand-rolled to perfection.',
+    price: 650,
+    image: 'https://images.unsplash.com/photo-1666190094762-2fae0da07874?w=600&h=450&fit=crop&q=90',
+    category: 'Barfi & Katli',
+    weight: '500g',
+    deliveryTime: '45 min',
+    rating: 4.9,
+    reviews: 248,
+    badge: 'Bestseller',
+    festiveTag: '🪔 Diwali Special',
+    inStock: true,
+    inventory: 50,
   },
   {
-    name: 'Chocolate Truffle',
-    image: 'https://example.com/images/chocolate-truffle.jpg',
-    price: 5.0,
-    category: 'Truffle',
-    description: 'Rich dark chocolate truffle with a creamy ganache center.',
+    name: 'Motichoor Ladoo',
+    description: 'Tiny golden beads of gram flour fried and bound with sugar syrup. Fragrant with cardamom and garnished with pistachios.',
+    price: 420,
+    image: 'https://images.unsplash.com/photo-1643297551340-10f2a67e1c6c?w=600&h=450&fit=crop&q=90',
+    category: 'Ladoo',
+    weight: '500g',
+    deliveryTime: '40 min',
+    rating: 4.8,
+    reviews: 182,
+    badge: 'Popular',
+    festiveTag: '',
+    inStock: true,
+    inventory: 80,
+  },
+  {
+    name: 'Rasgulla',
+    description: 'Soft, spongy Bengali cottage cheese dumplings soaked in light sugar syrup. Melt-in-your-mouth delicate sweetness.',
+    price: 380,
+    image: 'https://images.unsplash.com/photo-1601303516361-f5f42298c870?w=600&h=450&fit=crop&q=90',
+    category: 'Bengali Sweets',
+    weight: '500g',
+    deliveryTime: '35 min',
+    rating: 4.7,
+    reviews: 156,
+    badge: 'Fresh Daily',
+    festiveTag: '',
+    inStock: true,
+    inventory: 60,
   },
   {
     name: 'Rabri',
-    image: 'https://upload.wikimedia.org/wikipedia/commons/2/2a/Rabri_%281%29.jpg',
+    description: 'Rich and creamy slow-cooked milk dessert layered with malai and flavored with cardamom, saffron, and chopped nuts.',
     price: 600,
-    category: 'Indian Sweet',
-    description: 'Rabri is a rich and creamy dessert made by reducing milk to a thick, velvety consistency. It is flavored with cardamom, saffron, and nuts for an aromatic taste.',
+    image: 'https://upload.wikimedia.org/wikipedia/commons/2/2a/Rabri_%281%29.jpg',
+    category: 'Milk Sweets',
+    weight: '400g',
+    deliveryTime: '50 min',
+    rating: 4.8,
+    reviews: 134,
+    badge: 'Chef\'s Special',
+    festiveTag: '',
+    inStock: true,
+    inventory: 40,
   },
   {
-    name: 'Berry Tart',
-    image: 'https://example.com/images/berry-tart.jpg',
-    price: 6.25,
-    category: 'Tart',
-    description: 'Fresh mixed berry tart with a crisp pastry shell.',
+    name: 'Gulab Jamun',
+    description: 'Soft khoya dumplings deep fried to golden perfection and soaked in rose-flavored sugar syrup. A timeless classic.',
+    price: 320,
+    image: 'https://images.unsplash.com/photo-1627308595229-7830a5c91f9f?w=600&h=450&fit=crop&q=90',
+    category: 'Milk Sweets',
+    weight: '500g',
+    deliveryTime: '30 min',
+    rating: 4.9,
+    reviews: 310,
+    badge: 'All-time Favourite',
+    festiveTag: '',
+    inStock: true,
+    inventory: 100,
+  },
+  {
+    name: 'Besan Barfi',
+    description: 'Golden gram flour fudge slow-cooked in pure ghee with cardamom. Rich, dense, and irresistibly fragrant.',
+    price: 480,
+    image: 'https://images.unsplash.com/photo-1590080875515-8a3a8dc5735e?w=600&h=450&fit=crop&q=90',
+    category: 'Barfi & Katli',
+    weight: '500g',
+    deliveryTime: '45 min',
+    rating: 4.6,
+    reviews: 98,
+    badge: 'New',
+    festiveTag: '🎁 Gift Box',
+    inStock: true,
+    inventory: 45,
+  },
+  {
+    name: 'Boondi Ladoo',
+    description: 'Classic gram flour droplets fried and bound with jaggery syrup, cardamom, and dry fruits into perfect round balls.',
+    price: 360,
+    image: 'https://images.unsplash.com/photo-1666191472513-6d89f18ba167?w=600&h=450&fit=crop&q=90',
+    category: 'Ladoo',
+    weight: '500g',
+    deliveryTime: '40 min',
+    rating: 4.7,
+    reviews: 122,
+    badge: 'Traditional',
+    festiveTag: '🟡 Ganesh Chaturthi',
+    inStock: true,
+    inventory: 70,
+  },
+  {
+    name: 'Sandesh',
+    description: 'Delicate Bengali sweet made from freshly curdled chenna, lightly sweetened and flavored with saffron and cardamom.',
+    price: 440,
+    image: 'https://images.unsplash.com/photo-1601303516361-f5f42298c870?w=600&h=450&fit=crop&q=90',
+    category: 'Bengali Sweets',
+    weight: '400g',
+    deliveryTime: '35 min',
+    rating: 4.6,
+    reviews: 87,
+    badge: 'Heritage',
+    festiveTag: '',
+    inStock: true,
+    inventory: 35,
   },
 ];
 
-async function seedOrders(sweets) {
-  if (sweets.length === 0) return;
-  const existingOrders = await db.Order.find();
-  if (existingOrders.length > 0) {
-    console.log('Orders already seeded.');
-    return;
-  }
-
-  const mockOrders = [
-    {
-      _id: '64bf3de514a6bb4979e2c601',
-      items: [
-        {
-          sweetId: sweets[0]._id || sweets[0].id,
-          name: sweets[0].name,
-          quantity: 2,
-          price: sweets[0].price,
-        }
-      ],
-      customerName: 'Rahul Kumar',
-      customerEmail: 'rahul@example.com',
-      total: sweets[0].price * 2,
-      status: 'pending',
-    },
-    {
-      _id: '64bf3de514a6bb4979e2c602',
-      items: [
-        {
-          sweetId: sweets[1]._id || sweets[1].id,
-          name: sweets[1].name,
-          quantity: 1,
-          price: sweets[1].price,
-        }
-      ],
-      customerName: 'Priya Sharma',
-      customerEmail: 'priya@example.com',
-      total: sweets[1].price,
-      status: 'preparing',
-    },
-    {
-      _id: '64bf3de514a6bb4979e2c603',
-      items: [
-        {
-          sweetId: sweets[2]._id || sweets[2].id,
-          name: sweets[2].name,
-          quantity: 3,
-          price: sweets[2].price,
-        }
-      ],
-      customerName: 'Amit Patel',
-      customerEmail: 'amit@example.com',
-      total: sweets[2].price * 3,
-      status: 'shipped',
-    },
-    {
-      _id: '64bf3de514a6bb4979e2c604',
-      items: [
-        {
-          sweetId: sweets[0]._id || sweets[0].id,
-          name: sweets[0].name,
-          quantity: 1,
-          price: sweets[0].price,
-        },
-        {
-          sweetId: sweets[1]._id || sweets[1].id,
-          name: sweets[1].name,
-          quantity: 2,
-          price: sweets[1].price,
-        }
-      ],
-      customerName: 'Sneha Gupta',
-      customerEmail: 'sneha@example.com',
-      total: sweets[0].price + (sweets[1].price * 2),
-      status: 'delivered',
-    }
-  ];
-
-  for (const orderData of mockOrders) {
-    const order = new db.Order(orderData);
-    await order.save();
-  }
-  console.log('Seeded 4 mock orders.');
-}
-
 async function seed() {
   try {
-    const existing = await db.Sweets.find();
-    const existingNames = new Set(existing.map((item) => item.name));
-    const toSeed = seedSweets.filter((sweet) => !existingNames.has(sweet.name));
+    await mongoose.connect(MONGODB_URI);
+    console.log('Connected to MongoDB');
+
+    const existing = await Product.find();
+    const existingNames = new Set(existing.map((p) => p.name));
+    const toSeed = seedProducts.filter((p) => !existingNames.has(p.name));
 
     if (toSeed.length > 0) {
-      const saved = [];
-      for (const sweetData of toSeed) {
-        const sweet = new db.Sweets(sweetData);
-        const created = await sweet.save();
-        saved.push(created);
-      }
-      console.log(`Seeded ${saved.length} new sweets.`);
+      await Product.insertMany(toSeed);
+      console.log(`✅ Seeded ${toSeed.length} products into the products collection`);
     } else {
-      console.log('All seed sweets already exist. No new sweets added.');
+      console.log('ℹ️  All products already exist — nothing to seed');
     }
 
-    const allSweets = await db.Sweets.find();
-    await seedOrders(allSweets);
-  } catch (error) {
-    console.error('Failed to seed database:', error.message);
-    process.exit(1);
+    console.log(`📦 Total products in DB: ${await Product.countDocuments()}`);
+  } catch (err) {
+    console.error('❌ Seed failed:', err.message);
+  } finally {
+    await mongoose.disconnect();
+    console.log('Disconnected from MongoDB');
   }
 }
 
