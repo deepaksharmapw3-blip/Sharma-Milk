@@ -7,6 +7,7 @@ import { Menu, ShoppingBag, Search, Package, MapPin, ChevronDown, Clock, X, Sun,
 import { Button } from "@/components/ui/button"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 import { Input } from "@/components/ui/input"
+import { useCart } from "@/context/cart-context"
 
 const navigation = [
   { name: "Home", href: "#" },
@@ -22,19 +23,17 @@ export function Header() {
   const [scrolled, setScrolled] = useState(false)
   const [mounted, setMounted] = useState(false)
   const { theme, setTheme } = useTheme()
+  const { count, setIsOpen: openCart } = useCart()
 
   useEffect(() => {
     setMounted(true)
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 20)
-    }
+    const handleScroll = () => setScrolled(window.scrollY > 20)
     window.addEventListener("scroll", handleScroll)
     return () => window.removeEventListener("scroll", handleScroll)
   }, [])
 
   return (
     <header className="sticky top-0 z-50 w-full">
-      {/* Promo Banner */}
       <div className="bg-gradient-to-r from-primary via-[#8B0000] to-primary px-4 py-2 text-center text-sm text-primary-foreground dark:from-primary/90 dark:via-[#8B0000]/90 dark:to-primary/90">
         <span className="inline-flex items-center gap-2">
           <span className="animate-pulse">✨</span>
@@ -42,30 +41,20 @@ export function Header() {
           <span className="animate-pulse">✨</span>
         </span>
       </div>
-      
-      <nav className={`border-b transition-all duration-300 ${
-        scrolled 
-          ? "border-border/50 bg-background/80 shadow-lg shadow-black/5 backdrop-blur-xl dark:bg-background/90" 
-          : "border-accent/20 bg-background/95 backdrop-blur-sm"
-      }`}>
+
+      <nav className={`border-b transition-all duration-300 ${scrolled ? "border-border/50 bg-background/80 shadow-lg shadow-black/5 backdrop-blur-xl dark:bg-background/90" : "border-accent/20 bg-background/95 backdrop-blur-sm"}`}>
         <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 lg:px-8">
-          {/* Logo */}
           <Link href="/" className="group flex items-center gap-3">
             <div className="relative flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-br from-primary to-[#8B0000] shadow-lg shadow-primary/20 transition-transform duration-300 group-hover:scale-105">
               <span className="font-serif text-lg font-bold text-primary-foreground">SM</span>
               <div className="absolute -inset-[1px] rounded-2xl border border-accent/40" />
             </div>
             <div className="hidden flex-col sm:flex">
-              <span className="font-serif text-lg font-bold tracking-tight text-primary transition-colors">
-                Sharma Milk
-              </span>
-              <span className="text-[9px] font-semibold uppercase tracking-[0.15em] text-accent">
-                Est. 1980
-              </span>
+              <span className="font-serif text-lg font-bold tracking-tight text-primary transition-colors">Sharma Milk</span>
+              <span className="text-[9px] font-semibold uppercase tracking-[0.15em] text-accent">Est. 1980</span>
             </div>
           </Link>
 
-          {/* Location & Delivery Time - App Style */}
           <div className="hidden items-center gap-4 lg:flex">
             <button className="flex items-center gap-2 rounded-full border border-accent/20 bg-card/60 px-4 py-2 transition-all duration-200 hover:border-accent/40 hover:bg-card hover:shadow-md">
               <MapPin className="h-4 w-4 text-primary" />
@@ -78,119 +67,82 @@ export function Header() {
             </div>
           </div>
 
-          {/* Desktop Navigation */}
           <div className="hidden items-center gap-1 xl:flex">
             {navigation.map((item) => (
-              <Link
-                key={item.name}
-                href={item.href}
-                className="relative px-4 py-2 text-sm font-medium text-foreground/70 transition-all duration-200 hover:text-primary"
-              >
-                <span className="relative">
-                  {item.name}
-                  <span className="absolute -bottom-1 left-0 h-0.5 w-0 bg-gradient-to-r from-primary to-accent transition-all duration-300 group-hover:w-full" />
-                </span>
+              <Link key={item.name} href={item.href}
+                className="relative px-4 py-2 text-sm font-medium text-foreground/70 transition-all duration-200 hover:text-primary">
+                {item.name}
               </Link>
             ))}
           </div>
 
-          {/* Desktop Actions */}
           <div className="hidden items-center gap-1 lg:flex">
-            {/* Search */}
             <div className="relative">
               {searchOpen ? (
                 <div className="flex items-center gap-2 animate-in slide-in-from-right-4 duration-200">
-                  <Input
-                    type="text"
-                    placeholder="Search sweets..."
-                    className="w-48 border-accent/30 bg-card/80 text-sm transition-all focus:border-accent focus:ring-2 focus:ring-accent/20"
-                    autoFocus
-                  />
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={() => setSearchOpen(false)}
-                    className="h-8 w-8 transition-transform hover:rotate-90"
-                  >
+                  <Input type="text" placeholder="Search sweets..." autoFocus
+                    className="w-48 border-accent/30 bg-card/80 text-sm transition-all focus:border-accent focus:ring-2 focus:ring-accent/20" />
+                  <Button variant="ghost" size="icon" onClick={() => setSearchOpen(false)} className="h-8 w-8 transition-transform hover:rotate-90">
                     <X className="h-4 w-4" />
                   </Button>
                 </div>
               ) : (
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={() => setSearchOpen(true)}
-                  className="text-foreground/70 transition-all duration-200 hover:bg-accent/10 hover:text-primary hover:scale-110"
-                >
+                <Button variant="ghost" size="icon" onClick={() => setSearchOpen(true)}
+                  className="text-foreground/70 transition-all duration-200 hover:bg-accent/10 hover:text-primary hover:scale-110">
                   <Search className="h-5 w-5" />
                 </Button>
               )}
             </div>
-            
-            {/* Dark Mode Toggle */}
+
             {mounted && (
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-                className="text-foreground/70 transition-all duration-200 hover:bg-accent/10 hover:text-primary hover:scale-110"
-              >
-                {theme === "dark" ? (
-                  <Sun className="h-5 w-5 transition-transform hover:rotate-180" />
-                ) : (
-                  <Moon className="h-5 w-5 transition-transform hover:-rotate-12" />
-                )}
+              <Button variant="ghost" size="icon" onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+                className="text-foreground/70 transition-all duration-200 hover:bg-accent/10 hover:text-primary hover:scale-110">
+                {theme === "dark" ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
               </Button>
             )}
-            
+
             <Link href="#track-order">
               <Button variant="ghost" size="icon" className="text-foreground/70 transition-all duration-200 hover:bg-accent/10 hover:text-primary hover:scale-110">
                 <Package className="h-5 w-5" />
               </Button>
             </Link>
-            
-            {/* Cart with Preview */}
-            <Button variant="ghost" size="icon" className="relative text-foreground/70 transition-all duration-200 hover:bg-accent/10 hover:text-primary hover:scale-110">
+
+            {/* Cart button — opens the CartDrawer */}
+            <Button variant="ghost" size="icon" onClick={() => openCart(true)}
+              className="relative text-foreground/70 transition-all duration-200 hover:bg-accent/10 hover:text-primary hover:scale-110">
               <ShoppingBag className="h-5 w-5" />
-              <span className="absolute -right-0.5 -top-0.5 flex h-5 w-5 items-center justify-center rounded-full bg-gradient-to-r from-saffron to-accent text-[10px] font-bold text-white shadow-sm animate-in zoom-in duration-200">
-                3
-              </span>
+              {count > 0 && (
+                <span className="absolute -right-0.5 -top-0.5 flex h-5 w-5 items-center justify-center rounded-full bg-gradient-to-r from-saffron to-accent text-[10px] font-bold text-white shadow-sm animate-in zoom-in duration-200">
+                  {count}
+                </span>
+              )}
             </Button>
-            
-            <Button className="ml-2 gap-2 rounded-full bg-gradient-to-r from-primary to-[#8B0000] px-6 font-medium text-primary-foreground shadow-lg shadow-primary/20 transition-all duration-300 hover:scale-105 hover:shadow-xl hover:shadow-primary/30 active:scale-95">
+
+            <Button onClick={() => openCart(true)}
+              className="ml-2 gap-2 rounded-full bg-gradient-to-r from-primary to-[#8B0000] px-6 font-medium text-primary-foreground shadow-lg shadow-primary/20 transition-all duration-300 hover:scale-105 hover:shadow-xl hover:shadow-primary/30 active:scale-95">
               Order Now
             </Button>
           </div>
 
           {/* Mobile Actions */}
           <div className="flex items-center gap-1 lg:hidden">
-            {/* Mobile Search */}
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => setSearchOpen(!searchOpen)}
-              className="text-foreground/70 transition-all hover:bg-accent/10"
-            >
+            <Button variant="ghost" size="icon" onClick={() => setSearchOpen(!searchOpen)}
+              className="text-foreground/70 transition-all hover:bg-accent/10">
               <Search className="h-5 w-5" />
             </Button>
-            
-            {/* Mobile Dark Mode */}
             {mounted && (
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-                className="text-foreground/70 transition-all hover:bg-accent/10"
-              >
+              <Button variant="ghost" size="icon" onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+                className="text-foreground/70 transition-all hover:bg-accent/10">
                 {theme === "dark" ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
               </Button>
             )}
-            
-            <Button variant="ghost" size="icon" className="relative text-foreground/70">
+            <Button variant="ghost" size="icon" onClick={() => openCart(true)} className="relative text-foreground/70">
               <ShoppingBag className="h-5 w-5" />
-              <span className="absolute -right-0.5 -top-0.5 flex h-5 w-5 items-center justify-center rounded-full bg-gradient-to-r from-saffron to-accent text-[10px] font-bold text-white">
-                3
-              </span>
+              {count > 0 && (
+                <span className="absolute -right-0.5 -top-0.5 flex h-5 w-5 items-center justify-center rounded-full bg-gradient-to-r from-saffron to-accent text-[10px] font-bold text-white">
+                  {count}
+                </span>
+              )}
             </Button>
             <Sheet open={isOpen} onOpenChange={setIsOpen}>
               <SheetTrigger asChild>
@@ -200,64 +152,33 @@ export function Header() {
               </SheetTrigger>
               <SheetContent side="right" className="w-full max-w-xs border-l-accent/20 bg-background">
                 <div className="flex flex-col gap-6 pt-4">
-                  {/* Mobile Logo */}
                   <Link href="/" className="flex items-center gap-3" onClick={() => setIsOpen(false)}>
                     <div className="relative flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-primary to-[#8B0000]">
                       <span className="font-serif text-xl font-bold text-primary-foreground">SM</span>
                     </div>
                     <div className="flex flex-col">
                       <span className="font-serif text-xl font-bold text-primary">Sharma Milk</span>
-                      <span className="text-[9px] font-semibold uppercase tracking-[0.15em] text-accent">
-                        Est. 1980
-                      </span>
+                      <span className="text-[9px] font-semibold uppercase tracking-[0.15em] text-accent">Est. 1980</span>
                     </div>
                   </Link>
-                  
-                  {/* Mobile Location */}
-                  <button className="flex items-center justify-between rounded-xl border border-accent/20 bg-card/60 p-3 transition-all hover:border-accent/40">
-                    <div className="flex items-center gap-2">
-                      <MapPin className="h-4 w-4 text-primary" />
-                      <span className="text-sm font-medium">Kolkata</span>
-                    </div>
-                    <ChevronDown className="h-4 w-4 text-muted-foreground" />
-                  </button>
-                  
-                  {/* Mobile Search */}
-                  <div className="relative">
-                    <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-                    <Input
-                      type="text"
-                      placeholder="Search for sweets..."
-                      className="border-accent/20 bg-card/60 pl-10 transition-all focus:border-accent"
-                    />
-                  </div>
-                  
-                  {/* Mobile Nav Links */}
                   <nav className="flex flex-col gap-1">
                     {navigation.map((item) => (
-                      <Link
-                        key={item.name}
-                        href={item.href}
+                      <Link key={item.name} href={item.href}
                         className="rounded-lg px-3 py-2.5 text-base font-medium text-foreground transition-all duration-200 hover:bg-accent/10 hover:text-primary hover:translate-x-1"
-                        onClick={() => setIsOpen(false)}
-                      >
+                        onClick={() => setIsOpen(false)}>
                         {item.name}
                       </Link>
                     ))}
-                    <Link
-                      href="#track-order"
+                    <Link href="#track-order"
                       className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-base font-medium text-foreground transition-all duration-200 hover:bg-accent/10 hover:text-primary hover:translate-x-1"
-                      onClick={() => setIsOpen(false)}
-                    >
+                      onClick={() => setIsOpen(false)}>
                       <Package className="h-5 w-5" />
                       Track Order
                     </Link>
                   </nav>
-                  
                   <Button
                     className="w-full rounded-xl bg-gradient-to-r from-primary to-[#8B0000] py-6 text-base font-medium text-primary-foreground shadow-lg transition-all duration-200 hover:scale-[1.02] active:scale-95"
-                    onClick={() => setIsOpen(false)}
-                  >
+                    onClick={() => { setIsOpen(false); openCart(true) }}>
                     Order Now
                   </Button>
                 </div>
@@ -265,18 +186,13 @@ export function Header() {
             </Sheet>
           </div>
         </div>
-        
-        {/* Mobile Search Bar - Expandable */}
+
         {searchOpen && (
           <div className="border-t border-border/50 bg-background/95 p-3 backdrop-blur-xl lg:hidden animate-in slide-in-from-top-2 duration-200">
             <div className="relative">
               <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-              <Input
-                type="text"
-                placeholder="Search for sweets..."
-                className="border-accent/20 bg-card/60 pl-10"
-                autoFocus
-              />
+              <Input type="text" placeholder="Search for sweets..."
+                className="border-accent/20 bg-card/60 pl-10" autoFocus />
             </div>
           </div>
         )}

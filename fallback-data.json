@@ -107,7 +107,7 @@
       "customerName": "Amit Patel",
       "customerEmail": "amit@example.com",
       "total": 900,
-      "status": "shipped",
+      "status": "on_the_way",
       "createdAt": "2026-05-31T05:29:53.493Z",
       "updatedAt": "2026-05-31T05:29:53.493Z"
     },

@@ -122,18 +122,7 @@ app.patch('/orders/:id/status', requireJWT, (req, res) => {
         .catch((err) => res.status(500).json({ error: err.message }));
 });
 
-app.get('/orders/track/:id', (req, res) => {
-    db.Order.findById(req.params.id)
-        .then((order) => {
-            if (!order) {
-                return res.status(404).json({ error: 'Order not found' });
-            }
-            res.json(order);
-        })
-        .catch((error) => {
-            res.status(500).json({ error: 'Invalid order code or database error' });
-        });
-});
+// Note: /orders/:id handles order lookup — no duplicate route needed
 
 app.listen(port, () => {
     console.log(`Server started on port ${port}`);
