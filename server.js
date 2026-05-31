@@ -9,12 +9,16 @@ const productRoutes = require('./routes/products');
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// CORS — use env variable so it works in production too
+// CORS — allow any localhost port in dev, use FRONTEND_URL in production
 const FRONTEND_URL = process.env.FRONTEND_URL || 'http://localhost:3000';
 app.use((req, res, next) => {
-    res.header('Access-Control-Allow-Origin', FRONTEND_URL);
+    const origin = req.headers.origin || '';
+    const isLocalhost = /^http:\/\/localhost(:\d+)?$/.test(origin);
+    const allowedOrigin = isLocalhost ? origin : FRONTEND_URL;
+    res.header('Access-Control-Allow-Origin', allowedOrigin);
     res.header('Access-Control-Allow-Methods', 'GET,POST,PUT,PATCH,DELETE,OPTIONS');
     res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+    res.header('Access-Control-Allow-Credentials', 'true');
     if (req.method === 'OPTIONS') {
         return res.sendStatus(204);
     }
