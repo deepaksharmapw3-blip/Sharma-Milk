@@ -86,6 +86,19 @@ app.get('/orders/:id', passport.authenticate('local', { session: false }), (req,
     });
 });
 
+app.get('/orders/track/:id', (req, res) => {
+    db.Order.findById(req.params.id)
+        .then((order) => {
+            if (!order) {
+                return res.status(404).json({ error: 'Order not found' });
+            }
+            res.json(order);
+        })
+        .catch((error) => {
+            res.status(500).json({ error: 'Invalid order code or database error' });
+        });
+});
+
 app.listen(port, () => {
     console.log(`Server started on port ${port}`);
 });

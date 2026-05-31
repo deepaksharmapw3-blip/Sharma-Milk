@@ -27,7 +27,112 @@
       "_id": "1780030839301.3867",
       "createdAt": "2026-05-29T05:00:39.301Z",
       "updatedAt": "2026-05-29T05:00:39.301Z"
+    },
+    {
+      "name": "Vanilla Macaron",
+      "image": "https://example.com/images/vanilla-macaron.jpg",
+      "price": 3.5,
+      "category": "Macaron",
+      "description": "Light almond cookie with a vanilla bean buttercream filling.",
+      "_id": "1780205393487.5005",
+      "createdAt": "2026-05-31T05:29:53.487Z",
+      "updatedAt": "2026-05-31T05:29:53.487Z"
+    },
+    {
+      "name": "Chocolate Truffle",
+      "image": "https://example.com/images/chocolate-truffle.jpg",
+      "price": 5,
+      "category": "Truffle",
+      "description": "Rich dark chocolate truffle with a creamy ganache center.",
+      "_id": "1780205393489.1023",
+      "createdAt": "2026-05-31T05:29:53.489Z",
+      "updatedAt": "2026-05-31T05:29:53.489Z"
+    },
+    {
+      "name": "Berry Tart",
+      "image": "https://example.com/images/berry-tart.jpg",
+      "price": 6.25,
+      "category": "Tart",
+      "description": "Fresh mixed berry tart with a crisp pastry shell.",
+      "_id": "1780205393490.5725",
+      "createdAt": "2026-05-31T05:29:53.490Z",
+      "updatedAt": "2026-05-31T05:29:53.490Z"
     }
   ],
-  "orders": []
+  "orders": [
+    {
+      "_id": "64bf3de514a6bb4979e2c601",
+      "items": [
+        {
+          "sweetId": "1780030261136.001",
+          "name": "Mishti Doi",
+          "quantity": 2,
+          "price": 120
+        }
+      ],
+      "customerName": "Rahul Kumar",
+      "customerEmail": "rahul@example.com",
+      "total": 240,
+      "status": "pending",
+      "createdAt": "2026-05-31T05:29:53.492Z",
+      "updatedAt": "2026-05-31T05:29:53.492Z"
+    },
+    {
+      "_id": "64bf3de514a6bb4979e2c602",
+      "items": [
+        {
+          "sweetId": "1780030261136.002",
+          "name": "Rabri",
+          "quantity": 1,
+          "price": 600
+        }
+      ],
+      "customerName": "Priya Sharma",
+      "customerEmail": "priya@example.com",
+      "total": 600,
+      "status": "preparing",
+      "createdAt": "2026-05-31T05:29:53.493Z",
+      "updatedAt": "2026-05-31T05:29:53.493Z"
+    },
+    {
+      "_id": "64bf3de514a6bb4979e2c603",
+      "items": [
+        {
+          "sweetId": "1780030839301.3867",
+          "name": "Mango Rabri",
+          "quantity": 3,
+          "price": 300
+        }
+      ],
+      "customerName": "Amit Patel",
+      "customerEmail": "amit@example.com",
+      "total": 900,
+      "status": "shipped",
+      "createdAt": "2026-05-31T05:29:53.493Z",
+      "updatedAt": "2026-05-31T05:29:53.493Z"
+    },
+    {
+      "_id": "64bf3de514a6bb4979e2c604",
+      "items": [
+        {
+          "sweetId": "1780030261136.001",
+          "name": "Mishti Doi",
+          "quantity": 1,
+          "price": 120
+        },
+        {
+          "sweetId": "1780030261136.002",
+          "name": "Rabri",
+          "quantity": 2,
+          "price": 600
+        }
+      ],
+      "customerName": "Sneha Gupta",
+      "customerEmail": "sneha@example.com",
+      "total": 1320,
+      "status": "delivered",
+      "createdAt": "2026-05-31T05:29:53.494Z",
+      "updatedAt": "2026-05-31T05:29:53.494Z"
+    }
+  ]
 }
