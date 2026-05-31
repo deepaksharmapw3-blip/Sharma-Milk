@@ -63,7 +63,7 @@ export default function AddSweet() {
     setStatus("Saving sweet...")
     setError(null)
     try {
-      const res = await fetch(`${API_URL}/sweets`, {
+      const res = await fetch(`${API_URL}/products`, {
         method: "POST",
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
         body: JSON.stringify({ ...formData, price: Number(formData.price) }),
@@ -82,7 +82,7 @@ export default function AddSweet() {
 
   const loadSweets = async () => {
     try {
-      const res = await fetch(`${API_URL}/sweets`)
+      const res = await fetch(`${API_URL}/products`)
       if (!res.ok) throw new Error("Failed to load sweets")
       setSweets(await res.json())
     } catch (err) {
@@ -94,7 +94,7 @@ export default function AddSweet() {
     if (!confirm("Delete this sweet?")) return
     try {
       setDeletingId(id)
-      const res = await fetch(`${API_URL}/sweets/${id}`, {
+      const res = await fetch(`${API_URL}/products/${id}`, {
         method: "DELETE",
         headers: { Authorization: `Bearer ${token}` },
       })
