@@ -1,30 +1,46 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { useCart } from "@/context/cart-context"
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Minus, Plus, Trash2, ShoppingBag, CheckCircle, Copy, X } from "lucide-react"
+import { Minus, Plus, Trash2, ShoppingBag, CheckCircle, Copy, X, Smartphone, Loader2 } from "lucide-react"
 import { motion, AnimatePresence } from "framer-motion"
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000"
+const RAZORPAY_KEY_ID = process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID || ""
 
-type Step = "cart" | "checkout" | "success"
+type Step = "cart" | "checkout" | "payment" | "success"
+
+// Dynamically load Razorpay checkout script
+function loadRazorpayScript(): Promise<boolean> {
+  return new Promise((resolve) => {
+    if ((window as any).Razorpay) return resolve(true)
+    const script = document.createElement("script")
+    script.src = "https://checkout.razorpay.com/v1/checkout.js"
+    script.onload = () => resolve(true)
+    script.onerror = () => resolve(false)
+    document.body.appendChild(script)
+  })
+}
 
 export function CartDrawer() {
   const { items, removeItem, updateQty, clearCart, total, count, isOpen, setIsOpen } = useCart()
   const [step, setStep] = useState<Step>("cart")
   const [form, setForm] = useState({ name: "", phone: "", email: "" })
   const [loading, setLoading] = useState(false)
+  const [paymentLoading, setPaymentLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [orderId, setOrderId] = useState<string | null>(null)
+  const [paymentId, setPaymentId] = useState<string | null>(null)
   const [copied, setCopied] = useState(false)
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm((p) => ({ ...p, [e.target.name]: e.target.value }))
   }
 
+  // Step 1: Save order to DB, then move to payment step
   const handlePlaceOrder = async (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true)
@@ -49,12 +65,92 @@ export function CartDrawer() {
       const data = await res.json()
       if (!res.ok) throw new Error(data.error || "Failed to place order")
       setOrderId(data._id)
-      clearCart()
-      setStep("success")
+      setStep("payment")
     } catch (err) {
       setError(err instanceof Error ? err.message : "Something went wrong")
     } finally {
       setLoading(false)
+    }
+  }
+
+  // Step 2: Create Razorpay order and open UPI popup
+  const handleRazorpayPayment = async () => {
+    if (!orderId) return
+    setPaymentLoading(true)
+    setError(null)
+    try {
+      const loaded = await loadRazorpayScript()
+      if (!loaded) throw new Error("Failed to load payment gateway. Check your internet connection.")
+
+      // Create Razorpay order on backend
+      const res = await fetch(`${API_URL}/payment/create-order`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ amount: total, orderId }),
+      })
+      const orderData = await res.json()
+      if (!res.ok) throw new Error(orderData.error || "Failed to initiate payment")
+
+      // Open Razorpay UPI popup
+      const options = {
+        key: RAZORPAY_KEY_ID,
+        amount: orderData.amount,
+        currency: orderData.currency,
+        name: "Sharma Milk & Sweets",
+        description: `Order #${orderId.slice(-6).toUpperCase()}`,
+        image: "/logo.png",
+        order_id: orderData.razorpayOrderId,
+        method: { upi: true, card: false, netbanking: false, wallet: false, emi: false },
+        prefill: {
+          name: form.name,
+          contact: form.phone,
+          email: form.email || "",
+          method: "upi",
+        },
+        theme: { color: "#C0392B" },
+        modal: {
+          ondismiss: () => {
+            setPaymentLoading(false)
+            setError("Payment was cancelled. Please try again.")
+          },
+        },
+        handler: async (response: any) => {
+          // Verify payment on backend
+          try {
+            const verifyRes = await fetch(`${API_URL}/payment/verify`, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                razorpay_order_id: response.razorpay_order_id,
+                razorpay_payment_id: response.razorpay_payment_id,
+                razorpay_signature: response.razorpay_signature,
+                shopOrderId: orderId,
+              }),
+            })
+            const verifyData = await verifyRes.json()
+            if (!verifyRes.ok || !verifyData.success) {
+              throw new Error("Payment verification failed. Contact support.")
+            }
+            setPaymentId(response.razorpay_payment_id)
+            clearCart()
+            setStep("success")
+          } catch (err) {
+            setError(err instanceof Error ? err.message : "Payment verification failed")
+          } finally {
+            setPaymentLoading(false)
+          }
+        },
+      }
+
+      const rzp = new (window as any).Razorpay(options)
+      rzp.on("payment.failed", (response: any) => {
+        setPaymentLoading(false)
+        setError(`Payment failed: ${response.error.description}`)
+      })
+      rzp.open()
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Payment failed")
+      setPaymentLoading(false)
     }
   }
 
@@ -73,13 +169,14 @@ export function CartDrawer() {
   return (
     <Sheet open={isOpen} onOpenChange={(v) => { if (!v) handleClose(); else setIsOpen(true) }}>
       <SheetContent side="right" className="flex w-full max-w-md flex-col gap-0 p-0 bg-[#FFFDF7] border-l border-[#E2D5B8]">
-        
+
         {/* Header */}
         <SheetHeader className="flex flex-row items-center justify-between border-b border-[#E2D5B8] px-5 py-4">
           <SheetTitle className="font-serif text-xl font-bold text-[#2C1810]">
             {step === "cart" && `Your Cart ${count > 0 ? `(${count})` : ""}`}
             {step === "checkout" && "Checkout"}
-            {step === "success" && "Order Placed! 🎉"}
+            {step === "payment" && "Pay with UPI"}
+            {step === "success" && "Order Confirmed! 🎉"}
           </SheetTitle>
           <button onClick={handleClose} className="rounded-full p-1.5 text-[#7A5C44] transition hover:bg-[#F5EBD4]">
             <X className="h-5 w-5" />
@@ -214,7 +311,95 @@ export function CartDrawer() {
               </Button>
               <Button type="submit" form="checkout-form" disabled={loading}
                 className="flex-1 rounded-full bg-gradient-to-r from-[#C0392B] to-[#8B0000] py-6 font-bold text-[#F5D76E] shadow-lg transition-all hover:scale-[1.02] disabled:opacity-60">
-                {loading ? "Placing Order..." : "Place Order 🎉"}
+                {loading ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" />Processing...</> : "Continue to Pay →"}
+              </Button>
+            </div>
+          </>
+        )}
+
+        {/* ── PAYMENT STEP ── */}
+        {step === "payment" && (
+          <>
+            <div className="flex-1 overflow-y-auto px-5 py-4">
+              {/* UPI illustration */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="mb-6 flex flex-col items-center gap-4 rounded-3xl border border-[#E2D5B8] bg-white p-6 text-center shadow-sm"
+              >
+                <div className="flex h-20 w-20 items-center justify-center rounded-full bg-gradient-to-br from-[#6C3BF5] to-[#4A2CC0] shadow-lg">
+                  <Smartphone className="h-10 w-10 text-white" />
+                </div>
+                <div>
+                  <h3 className="font-serif text-xl font-bold text-[#2C1810]">Pay with UPI</h3>
+                  <p className="mt-1 text-sm text-[#7A5C44]">Use any UPI app — GPay, PhonePe, Paytm, BHIM</p>
+                </div>
+
+                {/* UPI app logos */}
+                <div className="flex items-center gap-4">
+                  {[
+                    { name: "GPay", bg: "from-[#4285F4] to-[#0F9D58]", text: "G" },
+                    { name: "PhonePe", bg: "from-[#5F259F] to-[#8B2FC9]", text: "P" },
+                    { name: "Paytm", bg: "from-[#00BAF2] to-[#0078B6]", text: "₹" },
+                    { name: "BHIM", bg: "from-[#F26522] to-[#C0392B]", text: "B" },
+                  ].map((app) => (
+                    <div key={app.name} className="flex flex-col items-center gap-1">
+                      <div className={`flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br ${app.bg} text-sm font-bold text-white shadow-sm`}>
+                        {app.text}
+                      </div>
+                      <span className="text-xs text-[#7A5C44]">{app.name}</span>
+                    </div>
+                  ))}
+                </div>
+              </motion.div>
+
+              {/* Amount card */}
+              <div className="mb-5 rounded-2xl border border-[#E2D5B8] bg-[#FFF8E7] p-4">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-xs font-bold uppercase tracking-wider text-[#C9A84C]">Amount to Pay</p>
+                    <p className="font-serif text-3xl font-bold text-[#C0392B]">₹{total}</p>
+                  </div>
+                  <div className="text-right">
+                    <p className="text-xs text-[#7A5C44]">Order ID</p>
+                    <p className="font-mono text-xs font-bold text-[#2C1810]">#{orderId?.slice(-6).toUpperCase()}</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* How it works */}
+              <div className="mb-5 rounded-2xl border border-[#E2D5B8] bg-white p-4">
+                <p className="mb-3 text-xs font-bold uppercase tracking-wider text-[#C9A84C]">How it works</p>
+                {[
+                  { step: "1", text: "Click \"Pay Now\" below" },
+                  { step: "2", text: "Enter your UPI ID or scan QR code" },
+                  { step: "3", text: "Approve payment in your UPI app" },
+                  { step: "4", text: "Order confirmed instantly!" },
+                ].map((s) => (
+                  <div key={s.step} className="flex items-center gap-3 py-1.5">
+                    <div className="flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full bg-[#C0392B] text-xs font-bold text-white">
+                      {s.step}
+                    </div>
+                    <p className="text-sm text-[#7A5C44]">{s.text}</p>
+                  </div>
+                ))}
+              </div>
+
+              {error && (
+                <div className="rounded-xl bg-red-50 border border-red-200 px-4 py-3 text-sm text-red-600">{error}</div>
+              )}
+            </div>
+
+            <div className="border-t border-[#E2D5B8] bg-white px-5 py-4 flex gap-3">
+              <Button variant="outline" onClick={() => setStep("checkout")}
+                className="flex-1 rounded-full border-[#E2D5B8] text-[#7A5C44] hover:border-[#C9A84C]">
+                ← Back
+              </Button>
+              <Button onClick={handleRazorpayPayment} disabled={paymentLoading}
+                className="flex-1 rounded-full bg-gradient-to-r from-[#6C3BF5] to-[#4A2CC0] py-6 font-bold text-white shadow-lg transition-all hover:scale-[1.02] disabled:opacity-60">
+                {paymentLoading
+                  ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" />Opening UPI...</>
+                  : <>🔒 Pay ₹{total} Now</>}
               </Button>
             </div>
           </>
@@ -229,9 +414,16 @@ export function CartDrawer() {
             </motion.div>
 
             <div>
-              <h3 className="mb-1 font-serif text-2xl font-bold text-[#2C1810]">Order Confirmed!</h3>
+              <h3 className="mb-1 font-serif text-2xl font-bold text-[#2C1810]">Payment Successful!</h3>
               <p className="text-[#7A5C44]">Your sweets are being prepared with love 🍬</p>
             </div>
+
+            {paymentId && (
+              <div className="w-full rounded-2xl border border-green-200 bg-green-50 p-3">
+                <p className="text-xs font-bold uppercase tracking-wider text-green-700">Payment ID</p>
+                <p className="mt-1 font-mono text-xs text-green-800 break-all">{paymentId}</p>
+              </div>
+            )}
 
             {orderId && (
               <div className="w-full rounded-2xl border border-[#E2D5B8] bg-white p-4 shadow-sm">

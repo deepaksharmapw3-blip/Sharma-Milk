@@ -54,6 +54,8 @@ const orderSchema = new mongoose.Schema({
     customerPhone: String,
     total: { type: Number, required: true, default: 0 },
     status: { type: String, default: 'pending', enum: ['pending', 'confirmed', 'preparing', 'on_the_way', 'delivered'] },
+    paymentId: { type: String, default: null },
+    paymentStatus: { type: String, default: 'unpaid', enum: ['unpaid', 'paid', 'failed'] },
 }, { timestamps: true });
 
 const SweetsModel = mongoose.models.Sweets || mongoose.model('Sweets', sweetSchema);

@@ -127,3 +127,12 @@ app.patch('/orders/:id/status', requireJWT, (req, res) => {
 app.listen(port, () => {
     console.log(`Server started on port ${port}`);
 });
+
+// ─── Payments (Razorpay UPI) ──────────────────────────────────────────────────
+const { createPaymentOrder, verifyPayment } = require('./razorpay-route');
+
+// Create a Razorpay order (called just before showing the UPI popup)
+app.post('/payment/create-order', createPaymentOrder);
+
+// Verify payment signature after UPI payment succeeds
+app.post('/payment/verify', verifyPayment);
