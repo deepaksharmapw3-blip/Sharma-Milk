@@ -7,9 +7,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Minus, Plus, Trash2, ShoppingBag, CheckCircle, Copy, X, Smartphone, Loader2 } from "lucide-react"
 import { motion, AnimatePresence } from "framer-motion"
-
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000"
-const RAZORPAY_KEY_ID = process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID || ""
+import { API_URL, RAZORPAY_KEY_ID } from "@/lib/config"
 
 type Step = "cart" | "checkout" | "payment" | "success"
 

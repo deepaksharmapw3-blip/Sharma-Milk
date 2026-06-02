@@ -6,8 +6,7 @@ import { Input } from "@/components/ui/input"
 import { Card, CardContent } from "@/components/ui/card"
 import { Package, Truck, CheckCircle, Search, MapPin, Phone, MessageCircle, Loader2, AlertCircle } from "lucide-react"
 import { motion } from "framer-motion"
-
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000"
+import { API_URL } from "@/lib/config"
 
 const orderStatuses = [
   { step: 1, label: "Confirmed", icon: CheckCircle },

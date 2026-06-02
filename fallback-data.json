@@ -133,6 +133,30 @@
       "status": "delivered",
       "createdAt": "2026-05-31T05:29:53.494Z",
       "updatedAt": "2026-05-31T05:29:53.494Z"
+    },
+    {
+      "items": [
+        {
+          "sweetId": "6a1c62a08149e14718e658b0",
+          "name": "Sandesh",
+          "quantity": 1,
+          "price": 440
+        },
+        {
+          "sweetId": "6a1c62a08149e14718e658ac",
+          "name": "Rabri",
+          "quantity": 1,
+          "price": 600
+        }
+      ],
+      "customerName": "Deepak Sharma",
+      "customerEmail": "deepaksharmapw3@gmail.com",
+      "customerPhone": "8910392179",
+      "total": 1040,
+      "status": "pending",
+      "_id": "1780386778649.6992",
+      "createdAt": "2026-06-02T07:52:58.649Z",
+      "updatedAt": "2026-06-02T07:52:58.649Z"
     }
   ]
 }

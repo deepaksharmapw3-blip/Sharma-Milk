@@ -7,8 +7,7 @@ import { Badge } from "@/components/ui/badge"
 import { ShoppingBag, Heart, Star, Plus, Minus, Clock, Flame, Loader2 } from "lucide-react"
 import { motion } from "framer-motion"
 import { useCart } from "@/context/cart-context"
-
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000"
+import { API_URL } from "@/lib/config"
 
 type Product = {
   _id: string
